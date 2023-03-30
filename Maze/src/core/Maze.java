@@ -13,7 +13,7 @@ public class Maze {
       1
     2   0
       3
-     */
+    */
 
     public Maze(String[] mazeStr, int startingStamina) {
         rows = mazeStr.length;
