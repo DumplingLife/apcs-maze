@@ -59,11 +59,13 @@ public class GamePage {
         staminaBar = new JProgressBar();
         staminaBar.setMinimum(0);
         staminaBar.setMaximum(maze.getStamina());
+        gbc.insets = new Insets(8,0,0,0);
         gbc.gridy = 1;
         panel.add(staminaBar, gbc);
 
         staminaLabel = new JLabel();
         gbc.gridy = 2;
+        gbc.insets = new Insets(0,0,8,0);
         panel.add(staminaLabel, gbc);
 
         paint();
