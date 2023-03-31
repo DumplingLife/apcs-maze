@@ -30,7 +30,7 @@ public class MainView {
         new Maze(new String[] {
             "######",
             "#..#.#",
-            "#Po.o.",
+            "#Po#o.",
             "##.#.#",
             "##...#",
             "##.###",
