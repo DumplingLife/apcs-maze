@@ -8,17 +8,17 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 
-public class GamePage {
-    private JPanel panel;
+public class GamePage extends JPanel {
     private ImageComponent[][] imageComponents;
     private JProgressBar staminaBar;
     private JLabel staminaLabel;
     private int rows, cols;
     private static Image playerRight, playerUp, playerLeft, playerDown, blank, wall, boulder;
-    private Maze maze;
+    public Maze maze;
+    public int speed = 500;
+    private final int maxWidth = 1200;
+    private final int maxHeight = 700;
     public GamePage(Maze maze) {
-        final int maxWidth = 1200;
-        final int maxHeight = 700;
         this.maze = maze;
         rows = maze.getRows();
         cols = maze.getCols();
@@ -36,8 +36,8 @@ public class GamePage {
             throw new RuntimeException(e);
         }
 
-        panel = new JPanel();
-        panel.setLayout(new GridBagLayout());
+        
+        this.setLayout(new GridBagLayout());
 
         JPanel grid = new JPanel();
         grid.setLayout(new GridLayout(rows, cols));
@@ -54,41 +54,38 @@ public class GamePage {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
-        panel.add(grid, gbc);
+        this.add(grid, gbc);
 
         staminaBar = new JProgressBar();
         staminaBar.setMinimum(0);
         staminaBar.setMaximum(maze.getStamina());
         gbc.insets = new Insets(8,0,0,0);
         gbc.gridy = 1;
-        panel.add(staminaBar, gbc);
+        this.add(staminaBar, gbc);
 
         staminaLabel = new JLabel();
         gbc.gridy = 2;
         gbc.insets = new Insets(0,0,8,0);
-        panel.add(staminaLabel, gbc);
+        this.add(staminaLabel, gbc);
 
         paint();
-    }
-
-    public JPanel getPanel() {
-        return panel;
     }
 
     public void left() throws InterruptedException {
         maze.left();
         paint();
-        Thread.sleep(500);
+        Thread.sleep(speed);
     }
     public void right() throws InterruptedException {
         maze.right();
         paint();
-        Thread.sleep(500);
+        Thread.sleep(speed);
     }
-    public void forward(int staminaUsed) throws InterruptedException {
-        maze.forward(staminaUsed);
+    public String forward(int staminaUsed) throws InterruptedException {
+        String nextCell = maze.forward(staminaUsed);
         paint();
-        Thread.sleep(500);
+        Thread.sleep(speed);
+        return nextCell;
     }
 
     public void paint() {
@@ -110,6 +107,6 @@ public class GamePage {
             }
         }
         staminaBar.setValue(maze.getStamina());
-        staminaLabel.setText(maze.getStamina() + "");
+        staminaLabel.setText("Stamina: " + maze.getStamina());
     }
 }

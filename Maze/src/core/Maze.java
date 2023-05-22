@@ -15,15 +15,15 @@ public class Maze {
       3
     */
 
-    public Maze(String[] mazeStr, int startingStamina) {
-        rows = mazeStr.length;
-        cols = mazeStr[0].length();
+    public Maze(MazeTemplate mazeTemplate) {
+        rows = mazeTemplate.mazeStr.length;
+        cols = mazeTemplate.mazeStr[0].length();
         playerRow = -1;
         playerCol = -1;
         obstacles = new char[rows][cols];
         for(int row=0; row<rows; row++) {
             for(int col=0; col<cols; col++) {
-                char ch = mazeStr[row].charAt(col);
+                char ch = mazeTemplate.mazeStr[row].charAt(col);
                 if(ch == 'P') {
                     obstacles[row][col] = '.';
                     playerRow = row;
@@ -32,7 +32,7 @@ public class Maze {
                 else obstacles[row][col] = ch;
             }
         }
-        this.stamina = startingStamina;
+        this.stamina = mazeTemplate.startingStamina;
         this.playerOrientation = 0;
     }
     public void left() {
@@ -41,10 +41,10 @@ public class Maze {
     public void right() throws InterruptedException {
         playerOrientation = (playerOrientation - 1 + 4) % 4;
     }
-    public void forward(int staminaUsed) throws InterruptedException {
+    public String forward(int staminaUsed) throws InterruptedException {
         if(playerEscaped) {
-            System.out.println("uh oh: tried to make a move, but already escaped");
-            return;
+            System.out.println("error: tried to make a move, but already escaped");
+            return "error";
         }
 
         //count # boulders in direction
@@ -54,10 +54,8 @@ public class Maze {
         boolean endOnWall = false;
         while(true) {
             //make sure to update first so we don't count square that player is on
-            if(playerOrientation == 0) c++;
-            if(playerOrientation == 1) r--;
-            if(playerOrientation == 2) c--;
-            if(playerOrientation == 3) r++;
+        	r = newR(r, playerOrientation);
+        	c = newC(c, playerOrientation);
 
             if(inBounds(r,c) && obstacles[r][c] == 'o') numBoulders++;
             else {
@@ -67,28 +65,24 @@ public class Maze {
         }
 
         if(staminaUsed > stamina) {
-            System.out.println("uh oh: tried to use " + staminaUsed + " stamina, but only " + stamina + " available.");
-            return;
+            System.out.println("error: tried to use " + staminaUsed + " stamina, but only " + stamina + " available.");
+            return "error";
         }
         stamina -= staminaUsed;
 
         if(endOnWall || staminaUsed < numBoulders * STAMINA_FOR_ONE_BOULDER) {
-            System.out.println("uh oh: tried to move forward but cannot");
-            return;
+            System.out.println("error: tried to move forward but cannot");
+            return "error";
         }
 
 
-        int newPlayerRow = playerRow;
-        int newPlayerCol = playerCol;
-        if(playerOrientation == 0) newPlayerCol = playerCol + 1;
-        if(playerOrientation == 1) newPlayerRow = playerRow - 1;
-        if(playerOrientation == 2) newPlayerCol = playerCol - 1;
-        if(playerOrientation == 3) newPlayerRow = playerRow + 1;
+        int newPlayerRow = newR(playerRow, playerOrientation);
+        int newPlayerCol = newC(playerCol, playerOrientation);
 
         if(!inBounds(newPlayerRow, newPlayerCol)) {
             System.out.println("successfully escaped maze!");
             playerEscaped = true;
-            return;
+            return "error";
         }
 
         if(numBoulders > 0) {
@@ -101,9 +95,26 @@ public class Maze {
 
         playerRow = newPlayerRow;
         playerCol = newPlayerCol;
+        
+        int nextCellR = newR(playerRow, playerOrientation);
+        int nextCellC = newC(playerCol, playerOrientation);
+        if(!inBounds(nextCellR, nextCellC) || obstacles[nextCellR][nextCellC] == '.') return "empty";
+        else if(obstacles[nextCellR][nextCellC] == '#') return "wall";
+        else if(obstacles[nextCellR][nextCellC] == 'o') return "boulder";
+        else return "oops";
     }
     private boolean inBounds(int r, int c) {
         return r >= 0 && r < rows && c >= 0 && c < cols;
+    }
+    private int newR(int r, int orientation) {
+        if(playerOrientation == 1) return r-1;
+        if(playerOrientation == 3) return r+1;
+        else return r;
+    }
+    private int newC(int c, int orientation) {
+    	if(playerOrientation == 0) return c+1;
+        if(playerOrientation == 2) return c-1;
+        else return c;
     }
 
     public char[][] getObstacles() {
@@ -118,7 +129,9 @@ public class Maze {
     public int getPlayerOrientation() {
         return playerOrientation;
     }
-    public boolean getPlayerEscaped() { return playerEscaped; }
+    public boolean getPlayerEscaped() {
+    	return playerEscaped;
+    }
     public int getRows() {
         return rows;
     }
