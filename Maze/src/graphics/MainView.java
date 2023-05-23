@@ -65,6 +65,7 @@ public class MainView {
                 gamePage = new GamePage(new Maze(levelTemplates[level]));
                 cards.add(gamePage, "Game Panel");
                 changePage("Game Panel");
+                gamePage.requestFocusInWindow();
             },
             (e) -> { changePage("Start Panel"); }
         );
@@ -90,5 +91,8 @@ public class MainView {
     public void resetGamePage() {
     	gamePage.maze = new Maze(levelTemplates[level]);
     	gamePage.paint();
+    }
+    public void quit() {
+    	frame.dispose();
     }
 }

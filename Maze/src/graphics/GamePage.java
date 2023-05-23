@@ -5,6 +5,7 @@ import core.Maze;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
 
@@ -67,7 +68,37 @@ public class GamePage extends JPanel {
         gbc.gridy = 2;
         gbc.insets = new Insets(0,0,8,0);
         this.add(staminaLabel, gbc);
+        
+        setFocusable(true);
+        addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                int keyCode = e.getKeyCode();
 
+            	try {
+	                if (keyCode == KeyEvent.VK_UP) {
+						System.out.println("F");
+	                	maze.forward(0);
+	                    paint();
+	                }
+	                else if (keyCode == KeyEvent.VK_LEFT) {
+	                	System.out.println("L");
+	                	maze.left();
+	                    paint();
+	                }
+	                else if (keyCode == KeyEvent.VK_RIGHT) {
+	                	System.out.println("R");
+	                	maze.right();
+	                    paint();
+	                }
+	            }
+	            catch (InterruptedException e1) {
+					e1.printStackTrace();
+				}
+            }
+        });
+        
+        
         paint();
     }
 
