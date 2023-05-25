@@ -76,19 +76,24 @@ public class GamePage extends JPanel {
                 int keyCode = e.getKeyCode();
 
             	try {
-	                if (keyCode == KeyEvent.VK_UP) {
+	                if(keyCode == KeyEvent.VK_UP) {
 						System.out.println("F");
 	                	maze.forward(0);
 	                    paint();
 	                }
-	                else if (keyCode == KeyEvent.VK_LEFT) {
+	                else if(keyCode == KeyEvent.VK_LEFT) {
 	                	System.out.println("L");
 	                	maze.left();
 	                    paint();
 	                }
-	                else if (keyCode == KeyEvent.VK_RIGHT) {
+	                else if(keyCode == KeyEvent.VK_RIGHT) {
 	                	System.out.println("R");
 	                	maze.right();
+	                    paint();
+	                }
+	                else if(keyCode == KeyEvent.VK_SPACE) {
+	                	System.out.println("F_50");
+	                	maze.forward(50);
 	                    paint();
 	                }
 	            }

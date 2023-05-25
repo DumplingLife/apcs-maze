@@ -37,7 +37,7 @@ public class InstructionsFrame extends JFrame {
                 "<br />You can set macros with the following syntax: \"M1 = L F2 R\", then use macros like a regular instruction: \"F M1 M1 R\"" +
                 "<br />" +
                 "<br />Additional instructions:" +
-                "<br />Speed: enter \"set speed 100\" to set the time betwene moves to 100ms" +
+                "<br />Speed: enter \"set speed 3\". Speed goes from 1-10, 1 being slow and 10 being fast." +
                 "<br />Reset: enter \"reset\" to restart the level. You can do this during a level or after you finish." +
                 "</html>");
         text.setFont(new Font("Arial", Font.PLAIN, 16));

@@ -11,7 +11,7 @@ public class Main {
     	Scanner scan = new Scanner(System.in);
     	String line = scan.nextLine();
     	while(!line.equals("quit")) { //CP2
-    		processLineFinal(line);
+    		processLineCP3(line);
     		line = scan.nextLine();
     	}
     	quit();
@@ -39,7 +39,6 @@ public class Main {
     }
     
     // F2
-    // F2_50
     // reset
     // set speed
     public static void processLineCP2(String line) {
@@ -67,6 +66,46 @@ public class Main {
         	right();
         }
         else {
+            int dist = -1;
+            if(inst.length() == 1) dist = 1;
+            else dist = Integer.parseInt(inst.substring(1));
+
+            for(int i=0; i<dist; i++) {
+                forward();
+            }
+        }
+    }
+    
+    // F2_50
+    // instructions
+    public static void processLineCP3(String line) {
+    	if(line.equals("reset")) {
+    		reset();
+    	}
+    	else if(line.startsWith("set speed")) {
+    		int speed = Integer.parseInt(line.substring(10));
+    		setSpeed(speed);
+    	}
+    	else if(line.equals("instructions")) {
+    		System.out.println("blah blah");
+    	}
+    	else {
+    		while(line.contains(" ")) {
+        		String inst = line.substring(0, line.indexOf(" "));
+        		line = line.substring(line.indexOf(" ") + 1);
+        		processInstructionCP3(inst);
+            }
+    		processInstructionCP3(line);
+    	}
+    }
+    public static void processInstructionCP3(String inst) {
+    	if(inst.equals("L")) {
+        	left();
+        }
+        else if(inst.equals("R")) {
+        	right();
+        }
+        else {
         	int staminaUsed = 0;
             String instructionFirstPart;
             if(inst.contains("_")) {
@@ -86,10 +125,9 @@ public class Main {
             }
         }
     }
-    
-    // F!
+
     // M1 = F2 L
-    // random
+    // F!
     public static void processLineFinal(String line) {
     	if(line.equals("reset")) {
     		//this isn't actually needed, because in the future, macros will be set before used
@@ -161,13 +199,10 @@ public class Main {
         }
     }
     
+    
     // ==================================================================
     // OLD
     // ==================================================================
-    // F!
-    // M1 = F2 L
-    // reset also resets macros
-    // random
     public static void oldExampleStudentFinal() {
         Scanner scan = new Scanner(System.in);
         String[] macros = new String[10]; //macros go from M1 to M9
