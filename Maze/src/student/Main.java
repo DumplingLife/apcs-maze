@@ -11,7 +11,7 @@ public class Main {
     	Scanner scan = new Scanner(System.in);
     	String line = scan.nextLine();
     	while(!line.equals("quit")) { //CP2
-    		processLineCP3(line);
+    		processLineFinal(line);
     		line = scan.nextLine();
     	}
     	quit();
@@ -141,6 +141,9 @@ public class Main {
     	else if(line.startsWith("set speed")) {
     		int speed = Integer.parseInt(line.substring(10));
     		setSpeed(speed);
+    	}
+    	else if(line.equals("instructions")) {
+    		System.out.println("blah blah");
     	}
     	else if(line.contains("=")) {
     		int macroId = Integer.parseInt(line.substring(1,2));
