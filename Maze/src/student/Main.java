@@ -46,8 +46,8 @@ public class Main {
     		reset();
     	}
     	else if(line.startsWith("set speed")) {
-    		int speed = Integer.parseInt(line.substring(10));
-    		setSpeed(speed);
+    		int speed = Integer.parseInt(line.substring(10)); 
+    		setSpeed(100*(11-speed));
     	}
     	else {
     		while(line.contains(" ")) {
@@ -84,7 +84,7 @@ public class Main {
     	}
     	else if(line.startsWith("set speed")) {
     		int speed = Integer.parseInt(line.substring(10));
-    		setSpeed(speed);
+    		setSpeed(100*(11-speed));
     	}
     	else if(line.equals("instructions")) {
     		System.out.println("blah blah");
@@ -140,7 +140,7 @@ public class Main {
     	}
     	else if(line.startsWith("set speed")) {
     		int speed = Integer.parseInt(line.substring(10));
-    		setSpeed(speed);
+    		setSpeed(100*(11-speed));
     	}
     	else if(line.equals("instructions")) {
     		System.out.println("blah blah");
@@ -219,7 +219,7 @@ public class Main {
         	}
         	else if(line.matches("^set speed \\d+$")) {
         		int speed = Integer.parseInt(line.substring(10));
-        		setSpeed(speed);
+        		setSpeed(100*(11-speed));
         	}
         	else if(line.matches("^M.*=.*")) {
         		int macroId = Integer.parseInt(line.substring(1,2));
@@ -315,9 +315,8 @@ public class Main {
     public static void reset() {
     	mainView.resetGamePage();
     }
-    // speed is 1-10, corresponding to 1000 - 100ms (reverse order)
-    public static void setSpeed(int speed) {
-    	mainView.getGamePage().speed = (11-speed) * 100;
+    public static void setSpeed(int delay) {
+    	mainView.getGamePage().speed = delay;
     }
     public static void quit() {
     	mainView.quit();
