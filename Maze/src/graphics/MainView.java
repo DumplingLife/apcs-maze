@@ -34,6 +34,13 @@ public class MainView {
     	
     	
     	levelTemplates = new MazeTemplate[] {
+	        new MazeTemplate(new String[] {
+	            "#######",
+	            "#.....#",
+	            "#.###.#",
+	            "#P#...#",
+	            "###.###",
+	        }, 0),
 	        //L F F R F F F F R F F L F F F F L F F R F F F
 	        new MazeTemplate(new String[] {
 	            "############",
@@ -42,7 +49,25 @@ public class MainView {
 	            "#P#.......##",
 	            "############",
 	        }, 0),
-	        //
+	        new MazeTemplate(new String[] {
+		        "#################",
+		        "#P......#...#...#",
+		        "###.###.#.#####.#",
+		        "#.#...#...#...#.#",
+		        "#.#.#.#######.#.#",
+		        "#.#.#.#.......#.#",
+		        "#.#.#.#.###.###.#",
+		        "#.#.#...#.......#",
+		        "#.###.###.#######",
+		        "#.#...#...#.....#",
+		        "#.#.###.#######.#",
+		        "#...#.......#...#",
+		        "#####.#####.#.#.#",
+		        "#.......#.....#.#",
+		        "#.#######.###.###",
+		        "#.#.........#....",
+		        "#################",
+	        }, 0),
 	        new MazeTemplate(new String[] {
 	            "############",
 	            "#.o.........",
@@ -50,16 +75,24 @@ public class MainView {
 	            "#P#.......##",
 	            "############",
 	        }, 4 * Maze.STAMINA_FOR_ONE_BOULDER),
-	        //L F R F R F3_50 L F2 L F F_50 R F2
+	        //L F R F R F3_50 L F2_100 F2 L F F_50 R F2
 	        new MazeTemplate(new String[] {
 	            "######",
 	            "#..#.#",
 	            "#Po#o.",
 	            "##.#.#",
-	            "##...#",
+	            "##.X.#",
 	            "##.###",
 	            "######",
-	        }, 6 * Maze.STAMINA_FOR_ONE_BOULDER), //actually only needs 4 stamina
+	        }, 10 * Maze.STAMINA_FOR_ONE_BOULDER), // only needs 8 stamina
+	        //L F F_50 L L F L F! L F_50 L L F R F! R F R F_150 L F!
+	        new MazeTemplate(new String[] {
+	            "#..##.#",
+	            "#ooooo#",
+	            "#.....#",
+	            "#P....#",
+	            "#######",
+	        }, 10 * Maze.STAMINA_FOR_ONE_BOULDER), //only needs 5 stamina
 	        new MazeTemplate(new String[] {
 	            "#########",
 	            "#..o....#",
@@ -72,14 +105,14 @@ public class MainView {
 	            "#...###.#",
 	            "#######.#",
 	        }, 29 * Maze.STAMINA_FOR_ONE_BOULDER), //best way is 29 stamina, I think
-	        //for screenshots
-	        /*
+	        //for testing/screenshots
+	        
 	        new MazeTemplate(new String[] {
 	            "#######",
-	            "#.Poo.#",
+	            "#Poo.X.",
 	            "#######",
-	        }, 4 * Maze.STAMINA_FOR_ONE_BOULDER), //actually only needs 4 stamina
-	        */
+	        }, 10 * Maze.STAMINA_FOR_ONE_BOULDER),
+	        
 	        
 	        new MazeTemplate(customLevelGrid, customLevelStamina),
 	    };
@@ -95,13 +128,11 @@ public class MainView {
         	levelTemplates.length,
             (i) -> {
             	level = i;
-                gamePage = new GamePage(new Maze(levelTemplates[level]));
-                cards.add(gamePage, "Game Panel");
-                changePage("Game Panel");
-                gamePage.requestFocusInWindow();
+                setGamePage();
             },
             (e) -> { changePage("Start Panel"); }
         );
+        
         cards.add(startPanel, "Start Panel");
         cards.add(levelSelectPanel, "Level Select Panel");
 
@@ -121,9 +152,12 @@ public class MainView {
     public GamePage getGamePage() {
         return gamePage;
     }
-    public void resetGamePage() {
-    	gamePage.maze = new Maze(levelTemplates[level]);
-    	gamePage.paint();
+    //sets game page to the stored level, sets/resets graphics accordingly
+    public void setGamePage() {
+    	gamePage = new GamePage(new Maze(levelTemplates[level]));
+        cards.add(gamePage, "Game Panel");
+        changePage("Game Panel");
+        gamePage.requestFocusInWindow();
     }
     public void quit() {
     	frame.dispose();

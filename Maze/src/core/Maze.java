@@ -41,17 +41,23 @@ public class Maze {
     public void right() throws InterruptedException {
         playerOrientation = (playerOrientation - 1 + 4) % 4;
     }
-    public String forward(int staminaUsed) throws InterruptedException {
+    public void forward(int staminaUsed) throws InterruptedException {
+    	//preliminary error checks
         if(playerEscaped) {
             System.out.println("error: tried to make a move, but already escaped");
-            return "error";
+            return;
         }
+        if(staminaUsed > stamina) {
+            System.out.println("error: tried to use " + staminaUsed + " stamina, but only " + stamina + " available.");
+            return;
+        }
+        
 
-        //count # boulders in direction
+        //count # boulders in direction and find the cell after all those
         int r = playerRow;
         int c = playerCol;
         int numBoulders = 0;
-        boolean endOnWall = false;
+        boolean canPushBoulders;
         while(true) {
             //make sure to update first so we don't count square that player is on
         	r = newR(r, playerOrientation);
@@ -59,49 +65,77 @@ public class Maze {
 
             if(inBounds(r,c) && obstacles[r][c] == 'o') numBoulders++;
             else {
-                if((!inBounds(r,c) && numBoulders > 0) || (inBounds(r,c) && obstacles[r][c] == '#')) endOnWall = true;
+            	//r,c is position just past the last boulder
+            	canPushBoulders = inBounds(r,c) && obstacles[r][c] == '.';
                 break;
             }
         }
+        
 
-        if(staminaUsed > stamina) {
-            System.out.println("error: tried to use " + staminaUsed + " stamina, but only " + stamina + " available.");
-            return "error";
-        }
+        //perform the move
         stamina -= staminaUsed;
-
-        if(endOnWall || staminaUsed < numBoulders * STAMINA_FOR_ONE_BOULDER) {
-            System.out.println("error: tried to move forward but cannot");
-            return "error";
-        }
-
-
-        int newPlayerRow = newR(playerRow, playerOrientation);
-        int newPlayerCol = newC(playerCol, playerOrientation);
-
-        if(!inBounds(newPlayerRow, newPlayerCol)) {
+        
+        int newRow = newR(playerRow, playerOrientation);
+        int newCol = newC(playerCol, playerOrientation);
+        
+        if(!inBounds(newRow, newCol)) {
             System.out.println("successfully escaped maze!");
             playerEscaped = true;
-            return "error";
         }
-
-        if(numBoulders > 0) {
-            //r and c is now the position just past the last boulder
-            //it has a boulder because we pushed the boulders
+        else if(numBoulders > 0) {
+            if(!canPushBoulders || staminaUsed < numBoulders * STAMINA_FOR_ONE_BOULDER) {
+                System.out.println("tried to move forward but cannot");
+                return;
+            }
+            
+            //r and c is the position just past the last boulder
             obstacles[r][c] = 'o';
-            //this was previously a boulder, now no obstacle
-            obstacles[newPlayerRow][newPlayerCol] = '.';
+            obstacles[newRow][newCol] = '.';
+            
+            playerRow = newRow;
+            playerCol = newCol;
         }
-
-        playerRow = newPlayerRow;
-        playerCol = newPlayerCol;
+        else {
+        	if(obstacles[newRow][newCol] == '#') {
+        		System.out.println("tried to move forward but cannot");
+        	}
+        	else if(obstacles[newRow][newCol] == 'X') {
+        		if(staminaUsed < 100) {
+        			System.out.println("tried to move forward but cannot");
+        		}
+        		else {
+        			obstacles[newRow][newCol] = 'x';
+        		}
+            }
+            else if(obstacles[newRow][newCol] == 'x') {
+        		if(staminaUsed < 100) {
+        			System.out.println("tried to move forward but cannot");
+        		}
+        		else {
+        			obstacles[newRow][newCol] = '.';
+        		}
+            }
+            else if(obstacles[newRow][newCol] == '.') {
+                playerRow = newRow;
+                playerCol = newCol;
+            }
+            else {
+            	throw new RuntimeException();
+            }
+        }
+    }
+    public String getNextCell() {
+        int newRow = newR(playerRow, playerOrientation);
+        int newCol = newC(playerCol, playerOrientation);
         
-        int nextCellR = newR(playerRow, playerOrientation);
-        int nextCellC = newC(playerCol, playerOrientation);
-        if(!inBounds(nextCellR, nextCellC) || obstacles[nextCellR][nextCellC] == '.') return "empty";
-        else if(obstacles[nextCellR][nextCellC] == '#') return "wall";
-        else if(obstacles[nextCellR][nextCellC] == 'o') return "boulder";
-        else return "oops";
+        if(playerEscaped) return "wall";
+        else if(!inBounds(newRow, newCol)) return "empty";
+        else {
+        	char c = obstacles[newRow][newCol];
+        	if(c == 'X' || c == 'x' || c == '#') return "wall";
+        	else if(c == 'o') return "boulder";
+        	else return "empty";
+        }
     }
     private boolean inBounds(int r, int c) {
         return r >= 0 && r < rows && c >= 0 && c < cols;

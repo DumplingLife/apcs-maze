@@ -8,35 +8,27 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class GamePage extends JPanel {
     private ImageComponent[][] imageComponents;
     private JProgressBar staminaBar;
     private JLabel staminaLabel;
     private int rows, cols;
-    private static Image playerRight, playerUp, playerLeft, playerDown, blank, wall, boulder;
-    public Maze maze;
+    private static Image playerRight, playerUp, playerLeft, playerDown, blank, wall, boulder, breakableWall;
+    private Maze maze;
     public int speed = 500;
     private final int maxWidth = 1200;
     private final int maxHeight = 700;
+    private int cellDimensions;
     public GamePage(Maze maze) {
         this.maze = maze;
         rows = maze.getRows();
         cols = maze.getCols();
-        int cellDimensions = Math.min(maxWidth/cols, maxHeight/rows);
-
-        try {
-            playerRight = ImageIO.read(new File("playerRight.png")).getScaledInstance(cellDimensions,cellDimensions,Image.SCALE_SMOOTH);
-            playerUp = ImageIO.read(new File("playerUp.png")).getScaledInstance(cellDimensions,cellDimensions,Image.SCALE_SMOOTH);
-            playerLeft = ImageIO.read(new File("playerLeft.png")).getScaledInstance(cellDimensions,cellDimensions,Image.SCALE_SMOOTH);
-            playerDown = ImageIO.read(new File("playerDown.png")).getScaledInstance(cellDimensions,cellDimensions,Image.SCALE_SMOOTH);
-            blank = ImageIO.read(new File("blank.png")).getScaledInstance(cellDimensions,cellDimensions,Image.SCALE_SMOOTH);
-            wall = ImageIO.read(new File("wall.png")).getScaledInstance(cellDimensions,cellDimensions,Image.SCALE_SMOOTH);
-            boulder = ImageIO.read(new File("boulder.png")).getScaledInstance(cellDimensions,cellDimensions,Image.SCALE_SMOOTH);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
+        
+        cellDimensions = Math.min(maxWidth/cols, maxHeight/rows);
+        setScheme(0);
         
         this.setLayout(new GridBagLayout());
 
@@ -103,7 +95,6 @@ public class GamePage extends JPanel {
             }
         });
         
-        
         paint();
     }
 
@@ -117,13 +108,32 @@ public class GamePage extends JPanel {
         paint();
         Thread.sleep(speed);
     }
-    public String forward(int staminaUsed) throws InterruptedException {
-        String nextCell = maze.forward(staminaUsed);
+    public void forward(int staminaUsed) throws InterruptedException {
+        maze.forward(staminaUsed);
         paint();
         Thread.sleep(speed);
-        return nextCell;
     }
-
+    public String getNextCell() {
+    	return maze.getNextCell();
+    }
+    public void setScheme(int scheme) {
+    	String folder = "scheme" + scheme;
+    	try {
+            playerRight = loadImage(Paths.get(folder, "playerRight.png").toFile());
+            playerUp = loadImage(Paths.get(folder, "playerUp.png").toFile());
+            playerLeft = loadImage(Paths.get(folder, "playerLeft.png").toFile());
+            playerDown = loadImage(Paths.get(folder, "playerDown.png").toFile());
+            blank = loadImage(Paths.get(folder, "blank.png").toFile());
+            wall = loadImage(Paths.get(folder, "wall.png").toFile());
+            boulder = loadImage(Paths.get(folder, "boulder.png").toFile());
+            breakableWall = loadImage(Paths.get(folder, "breakableWall.png").toFile());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    private Image loadImage(File file) throws IOException {
+    	return ImageIO.read(file).getScaledInstance(cellDimensions,cellDimensions,Image.SCALE_SMOOTH);
+    }
     public void paint() {
         char[][] obstacles = maze.getObstacles();
         int playerRow = maze.getPlayerRow();
@@ -140,6 +150,7 @@ public class GamePage extends JPanel {
                 else if(obstacles[r][c] == '.') imageComponents[r][c].setImage(blank);
                 else if(obstacles[r][c] == '#') imageComponents[r][c].setImage(wall);
                 else if(obstacles[r][c] == 'o') imageComponents[r][c].setImage(boulder);
+                else if(obstacles[r][c] == 'X' || obstacles[r][c] == 'x') imageComponents[r][c].setImage(breakableWall);
             }
         }
         staminaBar.setValue(maze.getStamina());

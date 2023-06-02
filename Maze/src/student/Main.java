@@ -153,6 +153,11 @@ public class Main {
     		if(macroId == 3) macro3 = macro;
     		if(macroId == 4) macro4 = macro;
     	}
+    	else if(line.startsWith("scheme"))
+        {
+            int scheme = Integer.parseInt(line.substring(7));
+            setScheme(scheme);
+        }
     	else {
     		line = line.replaceAll("M1", macro1);
     		line = line.replaceAll("M2", macro2);
@@ -175,9 +180,8 @@ public class Main {
         }
         else {
         	if(inst.equals("F!")) {
-        		String nextCell = "";
-        		while(!nextCell.equals("boulder") && !nextCell.equals("wall")) {
-        			nextCell = forward();
+        		while(!getNextCell().equals("boulder") && !getNextCell().equals("wall")) {
+        			forward();
         		}
         	}
         	else {
@@ -201,93 +205,20 @@ public class Main {
         	}
         }
     }
-    
-    
-    // ==================================================================
-    // OLD
-    // ==================================================================
-    public static void oldExampleStudentFinal() {
-        Scanner scan = new Scanner(System.in);
-        String[] macros = new String[10]; //macros go from M1 to M9
-        Arrays.fill(macros, "");
-        while(true) {
-        	String line = scan.nextLine();
-        	if(line.equals("reset")) {
-        		macros = new String[10];
-        		Arrays.fill(macros, "");
-        		reset();
-        	}
-        	else if(line.matches("^set speed \\d+$")) {
-        		int speed = Integer.parseInt(line.substring(10));
-        		setSpeed(100*(11-speed));
-        	}
-        	else if(line.matches("^M.*=.*")) {
-        		int macroId = Integer.parseInt(line.substring(1,2));
-        		macros[macroId] = line.substring(5);
-        	}
-        	else if(line.equals("random")) {
-        		//50 is not the cap; should be large enough to finish but not infinite
-        		for(int i=0; i<50; i++) {
-            		double r = Math.random();
-            		if(r < 0.1) left();
-            		else if(r < 0.2) right();
-            		else forward();
-            	}
-        	}
-        	else {
-        		for(int macroId=1; macroId<=9; macroId++) {
-        			line = line.replaceAll("M" + macroId, macros[macroId]);
-        		}
-        		String[] instructions = line.split(" ");
-                for(String instruction : instructions) {
-                    char first = instruction.charAt(0);
-                    if(first == 'L') left();
-                    if(first == 'R') right();
-                    if(first == 'F') {
-                    	if(instruction.equals("F!")) {
-                    		String nextCell = "";
-                    		while(!nextCell.equals("boulder") && !nextCell.equals("wall")) {
-                    			System.out.println(nextCell);
-                    			nextCell = forward();
-                    		}
-                    	}
-                    	else {
-                    		int staminaUsed = 0;
-                            String instructionFirstPart = null;
-                            if(instruction.contains("_")) {
-                                String[] instructionParts = instruction.split("_");
-                                staminaUsed = Integer.parseInt(instructionParts[1]);
-                                instructionFirstPart = instructionParts[0];
-                            }
-                            else instructionFirstPart = instruction;
-
-                            int dist = -1;
-                            if(instructionFirstPart.length() == 1) dist = 1;
-                            else dist = Integer.parseInt(instructionFirstPart.substring(1));
-
-                            for(int i=0; i<dist; i++) {
-                                forward(staminaUsed);
-                            }
-                    	}
-                    }
-                }
-        	}
-        }
-    }
 
     //[insert skull ascii art]
     //DO NOT MODIFY CODE BELOW THIS
     public static MainView mainView = new MainView();
 
-    public static String forward() {
-        return forward(0);
+    public static void forward() {
+        forward(0);
     }
-    public static String forward(int staminaUsed) {
+    public static void forward(int staminaUsed) {
         try {
             if(mainView.getGamePage() == null) {
                 throw new RuntimeException("make sure level is set");
             }
-            return mainView.getGamePage().forward(staminaUsed);
+            mainView.getGamePage().forward(staminaUsed);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -313,13 +244,27 @@ public class Main {
         }
     }
     public static void reset() {
-    	mainView.resetGamePage();
+    	mainView.setGamePage();
     }
     public static void setSpeed(int delay) {
     	mainView.getGamePage().speed = delay;
     }
     public static void quit() {
     	mainView.quit();
+    }
+    public static String getNextCell() {
+    	return mainView.getGamePage().getNextCell();
+    }
+    public static void setScheme(int scheme) {
+        try {
+            if(mainView.getGamePage() == null) {
+                throw new RuntimeException("make sure level is set");
+            }
+            mainView.getGamePage().setScheme(scheme);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        mainView.getGamePage().paint();
     }
 }
 
