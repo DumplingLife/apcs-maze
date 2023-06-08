@@ -49,6 +49,7 @@ public class MainView {
 	            "#P#.......##",
 	            "############",
 	        }, 0),
+	        //F2 R F2 L F2 R F4 L F2 L F2 R F4 R F2 R F2 L F2 R F2 L F2 L F4 R F2 L F2 R F2 L F4
 	        new MazeTemplate(new String[] {
 		        "#################",
 		        "#P......#...#...#",
@@ -89,10 +90,30 @@ public class MainView {
 	        new MazeTemplate(new String[] {
 	            "#..##.#",
 	            "#ooooo#",
-	            "#.....#",
+	            "#....X#",
 	            "#P....#",
 	            "#######",
-	        }, 10 * Maze.STAMINA_FOR_ONE_BOULDER), //only needs 5 stamina
+	        }, 20 * Maze.STAMINA_FOR_ONE_BOULDER), //only needs 9 stamina
+	        /*
+			M1 = R R F! R F! R F! R F
+			M2 = L L F! L F! L F! L F!
+			L F! R F F_50
+			M2
+			F_300
+			M1
+			F_100
+			M2
+			F_250
+			M1
+			F_150
+			M2
+			F_200
+			M1
+			F_200
+			M2
+			F_150
+			R F! R F!
+	         */
 	        new MazeTemplate(new String[] {
 	            "#########",
 	            "#..o....#",
@@ -104,16 +125,15 @@ public class MainView {
 	            "#.#o###.#",
 	            "#...###.#",
 	            "#######.#",
-	        }, 29 * Maze.STAMINA_FOR_ONE_BOULDER), //best way is 29 stamina, I think
+	        }, 28 * Maze.STAMINA_FOR_ONE_BOULDER),
 	        //for testing/screenshots
-	        
+	        /*
 	        new MazeTemplate(new String[] {
 	            "#######",
 	            "#Poo.X.",
 	            "#######",
 	        }, 10 * Maze.STAMINA_FOR_ONE_BOULDER),
-	        
-	        
+	        */
 	        new MazeTemplate(customLevelGrid, customLevelStamina),
 	    };
     	
@@ -151,6 +171,9 @@ public class MainView {
 
     public GamePage getGamePage() {
         return gamePage;
+    }
+    public void setLevel(int level) {
+    	this.level = level;
     }
     //sets game page to the stored level, sets/resets graphics accordingly
     public void setGamePage() {

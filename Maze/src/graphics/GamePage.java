@@ -8,7 +8,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class GamePage extends JPanel {
@@ -17,11 +16,13 @@ public class GamePage extends JPanel {
     private JLabel staminaLabel;
     private int rows, cols;
     private static Image playerRight, playerUp, playerLeft, playerDown, blank, wall, boulder, breakableWall;
+    //private static Image[] gates, pressurePlates;
     private Maze maze;
     public int speed = 500;
     private final int maxWidth = 1200;
     private final int maxHeight = 700;
     private int cellDimensions;
+    private int scheme = 0;
     public GamePage(Maze maze) {
         this.maze = maze;
         rows = maze.getRows();
@@ -117,6 +118,7 @@ public class GamePage extends JPanel {
     	return maze.getNextCell();
     }
     public void setScheme(int scheme) {
+    	this.scheme = scheme;
     	String folder = "scheme" + scheme;
     	try {
             playerRight = loadImage(Paths.get(folder, "playerRight.png").toFile());
@@ -127,9 +129,25 @@ public class GamePage extends JPanel {
             wall = loadImage(Paths.get(folder, "wall.png").toFile());
             boulder = loadImage(Paths.get(folder, "boulder.png").toFile());
             breakableWall = loadImage(Paths.get(folder, "breakableWall.png").toFile());
+            
+            /*
+            Color[] colors = {
+            		Color.BLUE,
+            		Color.RED,
+            		Color.GREEN,
+            		Color.YELLOW,
+            };
+            for(int i=0; i<colors.length; i++) {
+            	gates[i] = ImageUtils.addBackground(ImageIO.read(Paths.get(folder, "wall.png").toFile()), cellDimensions);
+            	pressurePlates[i] = ImageUtils.addBackground(ImageIO.read(Paths.get(folder, "blank.png").toFile()), cellDimensions);
+            }
+            */
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    public int getScheme() {
+    	return scheme;
     }
     private Image loadImage(File file) throws IOException {
     	return ImageIO.read(file).getScaledInstance(cellDimensions,cellDimensions,Image.SCALE_SMOOTH);
@@ -141,19 +159,31 @@ public class GamePage extends JPanel {
         int playerOrientation = maze.getPlayerOrientation();
         for(int r=0; r<rows; r++) {
             for(int c=0; c<cols; c++) {
+            	char ob = obstacles[r][c];
                 if(!maze.getPlayerEscaped() && r == playerRow && c == playerCol) {
                     if(playerOrientation == 0) imageComponents[r][c].setImage(playerRight);
                     if(playerOrientation == 1) imageComponents[r][c].setImage(playerUp);
                     if(playerOrientation == 2) imageComponents[r][c].setImage(playerLeft);
                     if(playerOrientation == 3) imageComponents[r][c].setImage(playerDown);
                 }
-                else if(obstacles[r][c] == '.') imageComponents[r][c].setImage(blank);
-                else if(obstacles[r][c] == '#') imageComponents[r][c].setImage(wall);
-                else if(obstacles[r][c] == 'o') imageComponents[r][c].setImage(boulder);
-                else if(obstacles[r][c] == 'X' || obstacles[r][c] == 'x') imageComponents[r][c].setImage(breakableWall);
+                else if(ob == '.') imageComponents[r][c].setImage(blank);
+                else if(ob == '#') imageComponents[r][c].setImage(wall);
+                else if(ob == 'o') imageComponents[r][c].setImage(boulder);
+                else if(ob == 'X' || ob == 'x') imageComponents[r][c].setImage(breakableWall);
+                /*
+                else if(ob == '1' || ob == '2' || ob == '3' || ob == '4') {
+                	imageComponents[r][c].setImage(pressurePlates[Integer.parseInt(obstacles[r][c] + "") - 1]);
+                }
+                else if(ob == 'a' || ob == 'b' || ob == 'c' || ob == 'd') {
+                	//either gate or empty
+                }
+                */
             }
         }
         staminaBar.setValue(maze.getStamina());
         staminaLabel.setText("Stamina: " + maze.getStamina());
+    }
+    public Maze getMaze() {
+    	return maze;
     }
 }

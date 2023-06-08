@@ -2,6 +2,7 @@ package core;
 
 public class Maze {
     public static final int STAMINA_FOR_ONE_BOULDER = 50;
+    public static final int STAMINA_FOR_BREAKABLE_WALL = 2*STAMINA_FOR_ONE_BOULDER;
     private int playerRow, playerCol, playerOrientation;
     private boolean playerEscaped = false;
     private int rows, cols;
@@ -100,7 +101,7 @@ public class Maze {
         		System.out.println("tried to move forward but cannot");
         	}
         	else if(obstacles[newRow][newCol] == 'X') {
-        		if(staminaUsed < 100) {
+        		if(staminaUsed < STAMINA_FOR_BREAKABLE_WALL) {
         			System.out.println("tried to move forward but cannot");
         		}
         		else {
@@ -108,7 +109,7 @@ public class Maze {
         		}
             }
             else if(obstacles[newRow][newCol] == 'x') {
-        		if(staminaUsed < 100) {
+        		if(staminaUsed < STAMINA_FOR_BREAKABLE_WALL) {
         			System.out.println("tried to move forward but cannot");
         		}
         		else {

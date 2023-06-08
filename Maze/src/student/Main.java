@@ -1,8 +1,8 @@
 package student;
 
-import graphics.MainView;
-
 import java.util.*;
+
+import graphics.MainView;
 
 public class Main {
 	private static String macro1, macro2, macro3, macro4;
@@ -11,7 +11,7 @@ public class Main {
     	Scanner scan = new Scanner(System.in);
     	String line = scan.nextLine();
     	while(!line.equals("quit")) { //CP2
-    		processLineFinal(line);
+    		processLine(line);
     		line = scan.nextLine();
     	}
     	quit();
@@ -128,7 +128,7 @@ public class Main {
 
     // M1 = F2 L
     // F!
-    public static void processLineFinal(String line) {
+    public static void processLine(String line) {
     	if(line.equals("reset")) {
     		//this isn't actually needed, because in the future, macros will be set before used
     		macro1 = null;
@@ -208,10 +208,11 @@ public class Main {
 
     //[insert skull ascii art]
     //DO NOT MODIFY CODE BELOW THIS
+    //if test was ran, api will not be null
     public static MainView mainView = new MainView();
 
     public static void forward() {
-        forward(0);
+    	forward(0);
     }
     public static void forward(int staminaUsed) {
         try {
@@ -247,12 +248,18 @@ public class Main {
     	mainView.setGamePage();
     }
     public static void setSpeed(int delay) {
+    	if(mainView.getGamePage() == null) {
+            throw new RuntimeException("make sure level is set");
+        }
     	mainView.getGamePage().speed = delay;
     }
     public static void quit() {
     	mainView.quit();
     }
     public static String getNextCell() {
+    	if(mainView.getGamePage() == null) {
+            throw new RuntimeException("make sure level is set");
+        }
     	return mainView.getGamePage().getNextCell();
     }
     public static void setScheme(int scheme) {
