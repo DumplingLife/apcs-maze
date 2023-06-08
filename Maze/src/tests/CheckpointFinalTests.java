@@ -9,9 +9,22 @@ import core.Maze;
 import student.Main;
 
 public class CheckpointFinalTests {
-	@Test public void test1() { TestHelper.test(0, new String[] {"L R L R"}, 3,1,0); }
-	@Test public void test2() { TestHelper.testScheme(0, new String[] {"F","scheme 1","F"}, 1); }
+	@Test public void test1() { TestHelper.test(0, new String[] {"L F!"}, 1,1,1); }
+	@Test public void test2() { TestHelper.test(0, new String[] {"L F! R F! R F!"}, 3,5,3); }
+	@Test
+	public void test3() {
+		TestHelper.test(0, new String[] {
+				"M1 = R F!",
+				"M2 = L F!",
+				"M2 M1",
+				"M1",
+			}, 3,5,3);
+	}
+	@Test public void test4() { TestHelper.testScheme(0, new String[] {"F","scheme 1","F"}, 1); }
 
+	
+	//full levels
+	@Test public void test7() { TestHelper.testEscape(0, new String[] {"L F! R F! R F! R F! L F!"}); }
 	@Test
 	public void test8() {
 		TestHelper.testEscape(2, new String[] {
