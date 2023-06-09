@@ -126,14 +126,14 @@ public class MainView {
 	            "#...###.#",
 	            "#######.#",
 	        }, 28 * Maze.STAMINA_FOR_ONE_BOULDER),
-	        //for testing/screenshots
-	        /*
 	        new MazeTemplate(new String[] {
 	            "#######",
-	            "#Poo.X.",
-	            "#######",
+	            "#P.._.#",
+	            "#ooo_.G",
+	            "#_....#",
+	            "#.#####",
 	        }, 10 * Maze.STAMINA_FOR_ONE_BOULDER),
-	        */
+	        
 	        new MazeTemplate(customLevelGrid, customLevelStamina),
 	    };
     	

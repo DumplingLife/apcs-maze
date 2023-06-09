@@ -15,8 +15,7 @@ public class GamePage extends JPanel {
     private JProgressBar staminaBar;
     private JLabel staminaLabel;
     private int rows, cols;
-    private static Image playerRight, playerUp, playerLeft, playerDown, blank, wall, boulder, breakableWall;
-    //private static Image[] gates, pressurePlates;
+    private static Image playerRight, playerUp, playerLeft, playerDown, blank, wall, boulder, breakableWall, pressurePlate, gate;
     private Maze maze;
     public int speed = 500;
     private final int maxWidth = 1200;
@@ -129,19 +128,8 @@ public class GamePage extends JPanel {
             wall = loadImage(Paths.get(folder, "wall.png").toFile());
             boulder = loadImage(Paths.get(folder, "boulder.png").toFile());
             breakableWall = loadImage(Paths.get(folder, "breakableWall.png").toFile());
-            
-            /*
-            Color[] colors = {
-            		Color.BLUE,
-            		Color.RED,
-            		Color.GREEN,
-            		Color.YELLOW,
-            };
-            for(int i=0; i<colors.length; i++) {
-            	gates[i] = ImageUtils.addBackground(ImageIO.read(Paths.get(folder, "wall.png").toFile()), cellDimensions);
-            	pressurePlates[i] = ImageUtils.addBackground(ImageIO.read(Paths.get(folder, "blank.png").toFile()), cellDimensions);
-            }
-            */
+        	gate = ImageUtils.addBackground(ImageIO.read(Paths.get(folder, "wall.png").toFile()), cellDimensions);
+        	pressurePlate = ImageUtils.addBackground(ImageIO.read(Paths.get(folder, "blank.png").toFile()), cellDimensions);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -168,16 +156,13 @@ public class GamePage extends JPanel {
                 }
                 else if(ob == '.') imageComponents[r][c].setImage(blank);
                 else if(ob == '#') imageComponents[r][c].setImage(wall);
-                else if(ob == 'o') imageComponents[r][c].setImage(boulder);
+                else if(ob == 'o' || ob == '|') imageComponents[r][c].setImage(boulder);
                 else if(ob == 'X' || ob == 'x') imageComponents[r][c].setImage(breakableWall);
-                /*
-                else if(ob == '1' || ob == '2' || ob == '3' || ob == '4') {
-                	imageComponents[r][c].setImage(pressurePlates[Integer.parseInt(obstacles[r][c] + "") - 1]);
+                else if(ob == '_') imageComponents[r][c].setImage(pressurePlate);
+                else if(ob == 'G') {
+                	if(maze.allPressurePlatesBlocked()) imageComponents[r][c].setImage(blank);
+                	else imageComponents[r][c].setImage(gate);
                 }
-                else if(ob == 'a' || ob == 'b' || ob == 'c' || ob == 'd') {
-                	//either gate or empty
-                }
-                */
             }
         }
         staminaBar.setValue(maze.getStamina());

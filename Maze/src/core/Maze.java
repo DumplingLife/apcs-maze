@@ -8,6 +8,8 @@ public class Maze {
     private int rows, cols;
     private int stamina;
     //# is wall, . is empty, o is movable
+    //X is breakable wall, x is half-broken breakable wall
+    //_ is pressure plate, | is pressure plate with boulder, G is gate
     private char[][] obstacles;
     /*
     orientation:
@@ -64,10 +66,10 @@ public class Maze {
         	r = newR(r, playerOrientation);
         	c = newC(c, playerOrientation);
 
-            if(inBounds(r,c) && obstacles[r][c] == 'o') numBoulders++;
+            if(inBounds(r,c) && hasBoulder(obstacles[r][c])) numBoulders++;
             else {
             	//r,c is position just past the last boulder
-            	canPushBoulders = inBounds(r,c) && obstacles[r][c] == '.';
+            	canPushBoulders = inBounds(r,c) && !stopsBoulders(obstacles[r][c]);
                 break;
             }
         }
@@ -90,14 +92,17 @@ public class Maze {
             }
             
             //r and c is the position just past the last boulder
-            obstacles[r][c] = 'o';
-            obstacles[newRow][newCol] = '.';
+            if(obstacles[r][c] == '_') obstacles[r][c] = '|';
+            else obstacles[r][c] = 'o';
+            
+            if(obstacles[newRow][newCol] == '|') obstacles[newRow][newCol] = '_';
+            else obstacles[newRow][newCol] = '.';
             
             playerRow = newRow;
             playerCol = newCol;
         }
         else {
-        	if(obstacles[newRow][newCol] == '#') {
+        	if(obstacles[newRow][newCol] == '#' || (obstacles[newRow][newCol] == 'G' && !allPressurePlatesBlocked())) {
         		System.out.println("tried to move forward but cannot");
         	}
         	else if(obstacles[newRow][newCol] == 'X') {
@@ -116,7 +121,7 @@ public class Maze {
         			obstacles[newRow][newCol] = '.';
         		}
             }
-            else if(obstacles[newRow][newCol] == '.') {
+            else if(obstacles[newRow][newCol] == '.' || obstacles[newRow][newCol] == '_' || (obstacles[newRow][newCol] == 'G' && allPressurePlatesBlocked())) {
                 playerRow = newRow;
                 playerCol = newCol;
             }
@@ -133,8 +138,8 @@ public class Maze {
         else if(!inBounds(newRow, newCol)) return "empty";
         else {
         	char c = obstacles[newRow][newCol];
-        	if(c == 'X' || c == 'x' || c == '#') return "wall";
-        	else if(c == 'o') return "boulder";
+        	if(c == '#' || c == 'X' || c == 'x' || (c == 'G' && !allPressurePlatesBlocked())) return "wall";
+        	else if(hasBoulder(c)) return "boulder";
         	else return "empty";
         }
     }
@@ -150,6 +155,20 @@ public class Maze {
     	if(playerOrientation == 0) return c+1;
         if(playerOrientation == 2) return c-1;
         else return c;
+    }
+    private boolean hasBoulder(char c) {
+    	return c == 'o' || c == '|';
+    }
+    private boolean stopsBoulders(char c) {
+    	return c == '#' || c == 'X' || c == 'x' || c == 'G';
+    }
+    public boolean allPressurePlatesBlocked() {
+    	for(char[] row : obstacles) {
+    		for(char c : row) {
+    			if(c == '_') return false;
+    		}
+    	}
+    	return true;
     }
 
     public char[][] getObstacles() {

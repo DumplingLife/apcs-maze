@@ -10,7 +10,7 @@ public class ImageUtils {
         g2d.setColor(Color.RED);
         g2d.fillRect(0, 0, dims, dims);
         g2d.drawImage(image,
-        		(int) (dims*0.2), (int) (dims*0.2), (int) (dims*0.8), (int) (dims*0.8),
+        		(int) (dims*0.15), (int) (dims*0.15), (int) (dims*0.85), (int) (dims*0.85),
         		0, 0, image.getWidth(), image.getHeight(),
         		null);
         g2d.dispose();
