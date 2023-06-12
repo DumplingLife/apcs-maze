@@ -53,4 +53,11 @@ public class CheckpointFinalTests {
 				"R F! R F!",
 			});
 	}
+	@Test
+	public void test10() {
+		TestHelper.testEscape(7, new String[] {
+				"R F_50 L F_100 R F L F L F_50",
+				"L F R F R F_50 R F! L F! L F R F!",
+			});
+	}
 }
