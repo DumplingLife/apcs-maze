@@ -116,16 +116,17 @@ public class MainView {
 	         */
 	        new MazeTemplate(new String[] {
 	            "#########",
-	            "#..o....#",
+	            "#..o..__#",
 	            "#.#o#####",
 	            "#.#o#####",
 	            "#P#o....#",
 	            "#.#o###.#",
 	            "#.#o###.#",
-	            "#.#o###.#",
+	            "#.#o###G#",
 	            "#...###.#",
 	            "#######.#",
 	        }, 28 * Maze.STAMINA_FOR_ONE_BOULDER),
+	        //R F_50 L F_100 R F L F L F_50
 	        new MazeTemplate(new String[] {
 	            "#######",
 	            "#P.._.#",
